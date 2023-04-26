@@ -10,10 +10,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        String message = "11011100101001111010100010001110111001010011110101000100011101110010100111101010001000111011100101001111010100010001110111001010011110101000100011101110010100111101010001000111011100101001111010100010001110111001010011110101000100011101110010100111101010001000111011100101001111010100010001";
-
+        String message = "111111110101010101";
         int Mdest = 8;
-        int Ment = 4;
+        int Ment = 6;
 
         System.out.println("Mensaje original: " + message);
 
@@ -68,32 +67,36 @@ public class Main {
      * @return La lista de nodos
      * @see LDNode
      */
-    public static List<LDNode> findLDNodes(String message, int Ment, int Mdest) {
+    public static List<LDNode> findLDNodes(String message, int Mdest, int Ment) {
         List<LDNode> LDNodes = new ArrayList<>();
 
-        while (message.length() >= Ment + Mdest) {
+        while (message.length() > Ment) {
+            // Comprobamos si quedan bits que no se han comprimido debido al tamaño de las ventanas
+            if (Ment + Mdest > message.length()) {
+                int numOfBits = message.length() - Mdest;
+                String bits = message.substring(message.length() - numOfBits);
+                LDNodes.add(new LDNode(bits));
+                break;
+            }
+
             // Cogemos los caracteres referentes a las ventanas de entrada y deslizante
-            String largeBin = message.substring(0, Ment);
-            String smallBin = message.substring(Ment, Ment + Mdest);
+            String largeBin = message.substring(0, Mdest);
+            String smallBin = message.substring(Mdest, Ment + Mdest);
 
             // Encontramos las coincidencias entre estas
-            LDNode LDNode = findBinarySubstring(largeBin, smallBin);
-            if (LDNode.getPosition() == -1) {
-                throw new IllegalStateException("No hay coincidencias en la ventana de entrada");
+            LDNode node = findBinarySubstring(largeBin, smallBin);
+
+            // Si no hay coincidencias hacemos la insercion de bit
+            if (node.getPosition() == -1) {
+                throw new IllegalStateException("No se encontraron coincidencias");
             }
-            LDNodes.add(LDNode);
+
+            // Añadimos el nodo
+            LDNodes.add(node);
 
             // Recortamos la longitud del mensaje
-            int length = LDNode.getLength();
+            int length = node.getLength();
             message = message.substring(length);
-        }
-
-        // Comprobamos si quedan bits que no se han comprimido debido al tamaño de las ventanas
-        if (message.length() < (Mdest + Ment)) {
-            int numOfBits = (Mdest + Ment) - message.length();
-            String bits = message.substring(message.length() - numOfBits);
-            // Añadimos los bits restantes a la lista de nodos
-            LDNodes.add(new LDNode(bits));
         }
 
         return LDNodes;
@@ -233,10 +236,8 @@ public class Main {
 
         // Comprobamos si quedan bits en el mensaje que no se han comprimido
         int lastWhiteSpaceIndex = encodedMessage.trim().lastIndexOf(' ');
-        String lastBinary = encodedMessage.substring(lastWhiteSpaceIndex).replace(" ", "");
-
-        // Si los hay los añadimos al mensaje
-        if (lastBinary.length() == 2) {
+        if (lastWhiteSpaceIndex != -1) {
+            String lastBinary = encodedMessage.substring(lastWhiteSpaceIndex).replace(" ", "");
             result.append(lastBinary);
         }
 
