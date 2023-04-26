@@ -10,9 +10,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        String message = "111111110101010101";
+        String message = "10100100101001010101011101011010010101011101010001";
         int Mdest = 8;
-        int Ment = 6;
+        int Ment = 4;
 
         System.out.println("Mensaje original: " + message);
 
