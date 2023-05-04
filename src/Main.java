@@ -27,6 +27,13 @@ public class Main {
         }
     }
 
+    /**
+     * Calcula el factor de compressió del missatge
+     *
+     * @param encodedMessage Missatge comprimit
+     * @param originalMessage Missatge original
+     * @return El resultat del factor de compressió
+     */
     private static double calculateCompressionFactor(String encodedMessage, String originalMessage) {
         int originalSize = originalMessage.length();
         int compressSize = encodedMessage.trim().replace(" ", "").length();

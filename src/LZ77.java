@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Algoritme LZ77
+ *
+ * @author Sergio Lopez
+ * @author Jordi Bujaldón
+ */
 public class LZ77 {
 
     private String message;
@@ -9,6 +15,13 @@ public class LZ77 {
     private final List<LDNode> coincidences;
     private final List<Integer> bitInsertionsIndexs;
 
+    /**
+     * Constructor que rep el missatge a comprimir i les mides de les finestres
+     *
+     * @param message Missatge a comprimir
+     * @param Mdes Mida de la finestra lliscant
+     * @param Ment Mida de la finestra d'entrada
+     */
     public LZ77(String message, int Mdes, int Ment) {
         this.message = message;
         if (Ment > Mdes) {
@@ -23,6 +36,11 @@ public class LZ77 {
         this.bitInsertionsIndexs = new ArrayList<>();
     }
 
+    /**
+     * Mètode que comprimeix el missatge amb l'algoritme LZ77
+     *
+     * @return El missatge comprimit
+     */
     public String encode() {
         updateMessageEncode();
         String tempMessage = message;
@@ -46,6 +64,10 @@ public class LZ77 {
         return formatMessage() + remainingBits;
     }
 
+    /**
+     * Mètode que actualitza el missatge utilitzant la tècnica d'inserció de bits per a que hi hagi
+     * sempre coincidencies
+     */
     private void updateMessageEncode() {
         StringBuilder result = new StringBuilder(message);
 
@@ -66,6 +88,13 @@ public class LZ77 {
         message = result.toString();
     }
 
+    /**
+     * Mètode que retorna la coincidencia de les finestres
+     *
+     * @param messageMdes Cadena de la finestra lliscant
+     * @param messageMent Cadena de la finestra d'entrada
+     * @return un LDNode amb la informació de la coincidencia
+     */
     private LDNode findCoincidence(String messageMdes, String messageMent) {
         LDNode findedNode = null;
         boolean find = false;
@@ -92,6 +121,11 @@ public class LZ77 {
         return findedNode;
     }
 
+    /**
+     * Mètode que formateja el missatge comprimit
+     *
+     * @return El missatge amb el format per veure les coincidencies
+     */
     private String formatMessage() {
         int MentLength = (int) Math.ceil(Math.log(Ment) / Math.log(2));
         int MdesLength = (int) Math.ceil(Math.log(Mdes) / Math.log(2));
@@ -125,6 +159,12 @@ public class LZ77 {
         return messageResult.toString();
     }
 
+    /**
+     * Mètode que descomprimeix el missatge passat utilitzant LZ77
+     *
+     * @param encodedMessage Missatge a descomprimir
+     * @return El missatge originalº
+     */
     public String decode(String encodedMessage) {
         String trimMessage = encodedMessage.replace(" ", "");
         String initialPart = trimMessage.substring(0, Mdes);
@@ -149,6 +189,12 @@ public class LZ77 {
         return updateResultDecode(result.toString());
     }
 
+    /**
+     * Mètode que elimina les insercions de bits fetes al mètode encodd
+     *
+     * @param result El missatge de la descompressió
+     * @return El missatge original
+     */
     private String updateResultDecode(String result) {
         StringBuilder updatedResult = new StringBuilder(result);
 
